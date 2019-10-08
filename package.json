@@ -75,6 +75,7 @@
         "ansi-html": "^0.0.7",
         "md5-file": "^4.0.0",
         "loader-utils": "^1.2.3",
+        "lru-cache": "^5.1.1",
         "html-entities": "^1.2.1"
     },
     "devDependencies": {

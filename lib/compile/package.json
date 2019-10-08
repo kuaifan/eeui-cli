@@ -24,6 +24,7 @@
     "weex-bindingx": "^0.0.49",
     "ansi-html": "^0.0.7",
     "html-entities": "^1.2.1",
-    "mailgun-js": "^0.22.0"
+    "mailgun-js": "^0.22.0",
+    "lru-cache": "^5.1.1"
   }
 }
