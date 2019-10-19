@@ -163,7 +163,7 @@ function initProject(createName) {
                     changeAppKey(rundir);
 
                     if (shelljs.which('pod')) {
-                        let spinPod = ora('正在运行pod install...');
+                        let spinPod = ora('pod install...');
                         spinPod.start();
                         shelljs.cd(rundir + '/platforms/ios/eeuiApp');
                         shelljs.exec('pod install', {silent: true}, (code, stdout, stderr) => {
