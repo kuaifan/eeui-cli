@@ -408,7 +408,7 @@ let args = yargs
         }
     })
     .command({
-        command: "plugin <command> <name> [simple]",
+        command: "plugin <command> <name>",
         desc: "添加、删除、创建或发布插件",
         handler: (argv) => {
             utils.verifyeeuiProject();
@@ -417,7 +417,7 @@ let args = yargs
             op.name = argv.name;
             op.rootDir = process.cwd();
             op.dir = path.basename(process.cwd());
-            op.simple = argv.simple === true;
+            op.simple = argv.s === true;
             op.platform = "all";
             switch (argv.command) {
                 case 'add':
@@ -494,10 +494,10 @@ let args = yargs
     .command({
         command: "build",
         desc: "编译构造",
-        handler: () => {
+        handler: (argv) => {
             utils.verifyeeuiProject();
             utils.verifyeeuiTemplate();
-            builder.build();
+            builder.build(argv.s === true);
         }
     })
     .command({
