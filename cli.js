@@ -163,10 +163,12 @@ function initProject(createName) {
                     changeAppKey(rundir);
 
                     if (shelljs.which('pod')) {
+                        let tempPath = process.cwd();
                         let spinPod = ora('pod install...');
                         spinPod.start();
                         shelljs.cd(rundir + '/platforms/ios/eeuiApp');
                         shelljs.exec('pod install', {silent: true}, (code, stdout, stderr) => {
+                            shelljs.cd(tempPath);
                             spinPod.stop();
                             if (code !== 0) {
                                 logger.warn("运行pod install错误:" + code + "，请稍后手动运行！");
