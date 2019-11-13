@@ -1,6 +1,6 @@
 {
     "name": "eeui-cli",
-    "version": "1.0.31",
+    "version": "1.0.31-SR1",
     "description": "A simple CLI for scaffolding eeui projects, we provide eeui-template to quickly build small and medium sized app.",
     "bin": {
         "eeui": "./cli.js"
