@@ -7,6 +7,7 @@ module.exports = {
 
     backupDir: "common/backup",
     distDir: "common/dist",
+    toolsDir: "common/tools",
     zipPackDir: "common/zip/build",
     diffPackDir: "common/zip/differ",
 

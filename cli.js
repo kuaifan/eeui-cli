@@ -20,6 +20,7 @@ const create = require('./lib/plugin/create');
 const publish = require('./lib/plugin/publish');
 const update = require('./lib/utils/update');
 const repair = require('./lib/utils/repair');
+const tools = require('./lib/utils/tools');
 const setting = require('./lib/utils/setting');
 
 const TemplateRelease = require("./template-release");
@@ -447,6 +448,22 @@ let args = yargs
         handler: () => {
             utils.verifyeeuiProject();
             repair.start();
+        }
+    })
+    .command({
+        command: "icons <id>",
+        desc: "一键设置图标资源",
+        handler: (argv) => {
+            utils.verifyeeuiProject();
+            tools.icons(argv.id);
+        }
+    })
+    .command({
+        command: "launchimage <id>",
+        desc: "一键设置启动图资源",
+        handler: (argv) => {
+            utils.verifyeeuiProject();
+            tools.launchimage(argv.id);
         }
     })
     .command({
