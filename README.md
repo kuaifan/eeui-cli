@@ -50,7 +50,7 @@ eeui build
 #### 3-5、创建vue页面示例模板
 
 ```bash
-eeui vue <pageName>
+eeui vue [pageName]
 ```
 
 - pageName: 页面名称
@@ -58,11 +58,29 @@ eeui vue <pageName>
 #### 3-6、安装插件
 
 ```bash
-eeui plugin <command> <pluginName>
+eeui plugin [command] [pluginName]
 ```
 
-- command: 命令（安装：`install`，卸载：`uninstall`，创建：`create`，发布：`publish`）
+- command: 命令（安装：`install`，卸载：`uninstall`，修复：`repair`，创建：`create`，发布：`publish`）
 - pluginName: 插件名称（插件列表可以查看[https://eeui.app/markets/](https://eeui.app/markets/)）
+- command为`repair`时pluginName可留空。
+
+```
+//安装插件示例：
+eeui plugin install pay
+
+//卸载插件示例：
+eeui plugin uninstall pay
+
+//修复插件示例：
+eeui plugin repair
+
+//创建插件示例：
+eeui plugin create pluginDemo
+
+//发布插件示例：
+eeui plugin publish pluginDemo
+```
 
 #### 3-7、App设置（应用名称、版本等）
 
@@ -82,25 +100,41 @@ eeui setdemo
 eeui repair
 ```
 
-#### 3-10、登录云中心
+#### 3-10、一键设置应用图标
+
+```bash
+eeui icons [id]
+```
+
+- id: 图标资源ID，生成地址：[https://console.eeui.app/#/tools/icons](https://console.eeui.app/#/tools/icons)
+
+#### 3-11、一键设置应用启动图
+
+```bash
+eeui launchimage [id]
+```
+
+- id: 启动图资源ID，生成地址：[https://console.eeui.app/#/tools/launchimage](https://console.eeui.app/#/tools/launchimage)
+
+#### 3-12、登录云中心
 
 ```bash
 eeui login
 ```
 
-#### 3-11、登出云中心
+#### 3-13、登出云中心
 
 ```bash
 eeui logout
 ```
 
-#### 3-12、备份项目开发文件
+#### 3-14、备份项目开发文件
 
 ```bash
 eeui backup
 ```
 
-#### 3-13、恢复项目开发文件
+#### 3-15、恢复项目开发文件
 
 ```bash
 eeui recovery

@@ -384,7 +384,7 @@ let args = yargs
         }
     })
     .command({
-        command: "vue <pageName>",
+        command: "vue [pageName]",
         desc: "创建vue页面示例模板",
         handler: (argv) => {
             utils.verifyeeuiProject();
@@ -411,7 +411,7 @@ let args = yargs
         }
     })
     .command({
-        command: "plugin <command> <name>",
+        command: "plugin [command] [name]",
         desc: "添加、删除、创建或发布插件",
         handler: (argv) => {
             utils.verifyeeuiProject();
@@ -430,13 +430,19 @@ let args = yargs
                     break;
                 case 'remove':
                 case 'uninstall':
-                case 'un':
+                case 'u':
                     plugin.remove(op);
                     break;
+                case 'repair':
+                case 'r':
+                    plugin.repair(op);
+                    break;
                 case 'create':
+                case 'c':
                     create.create(op);
                     break;
                 case 'publish':
+                case 'p':
                     publish.publish(op);
                     break;
             }
@@ -451,7 +457,7 @@ let args = yargs
         }
     })
     .command({
-        command: "icons <id>",
+        command: "icons [id]",
         desc: "一键设置图标资源",
         handler: (argv) => {
             utils.verifyeeuiProject();
@@ -459,7 +465,7 @@ let args = yargs
         }
     })
     .command({
-        command: "launchimage <id>",
+        command: "launchimage [id]",
         desc: "一键设置启动图资源",
         handler: (argv) => {
             utils.verifyeeuiProject();
