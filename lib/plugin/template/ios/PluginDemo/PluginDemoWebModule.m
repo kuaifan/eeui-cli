@@ -1,15 +1,15 @@
 //
-//  WebPluginDemoModule.m
+//  PluginDemoWebModule.m
 //  Pods
 //
 
-#import "WebPluginDemoModule.h"
+#import "PluginDemoWebModule.h"
 
-@interface WebPluginDemoModule ()
+@interface PluginDemoWebModule ()
 
 @end
 
-@implementation WebPluginDemoModule
+@implementation PluginDemoWebModule
 
 //简单
 - (void)simple:(NSString*)msg

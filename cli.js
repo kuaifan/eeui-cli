@@ -280,17 +280,34 @@ function setDemo(rundir) {
  * 列出可用的模板版本
  */
 function displayReleases() {
-    logger.info("正在获取版本信息...");
+    let spinPod = ora('正在获取版本信息...');
+    spinPod.start();
     templateRelease.fetchReleaseVersions((err, result) => {
+        spinPod.stop();
         if (err) {
             logger.error(err);
             return;
         }
-        console.log("可用的版本:");
-        result.forEach(t => {
-            console.log(chalk.green.underline(t));
+        let array = [];
+        result.some(t => {
+            if (!utils.leftExists(t, "2")) {
+                return false;
+            }
+            array.push(t);
+            if (i > 10) {
+                return true;
+            }
+            i++;
         });
-    })
+        if (array.length === 0) {
+            logger.fatal("无可用版本！");
+        } else {
+            console.log("可用的版本:");
+            array.forEach((t) => {
+                console.log(chalk.green.underline(t));
+            })
+        }
+    });
 }
 
 /**
@@ -379,6 +396,9 @@ let args = yargs
         command: "update",
         desc: "项目主框架升级至最新版本",
         handler: () => {
+            if (utils.runNum(utils.getMiddle(utils.projectVersion(), null, ".")) < 2) {
+                logger.error(`当前主程序版本${utils.projectVersion()}仅支持手动升级，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
+            }
             utils.verifyeeuiProject();
             update.start();
         }
@@ -414,6 +434,9 @@ let args = yargs
         command: "plugin [command] [name]",
         desc: "添加、删除、创建或发布插件",
         handler: (argv) => {
+            if (utils.runNum(utils.getMiddle(utils.projectVersion(), null, ".")) < 2) {
+                logger.error(`当前主程序版本${utils.projectVersion()}过低无法使用此功能，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
+            }
             utils.verifyeeuiProject();
             utils.verifyeeuiTemplate();
             let op = {};
@@ -421,13 +444,13 @@ let args = yargs
             op.rootDir = process.cwd();
             op.dir = path.basename(process.cwd());
             op.simple = argv.s === true;
-            op.platform = "all";
             switch (argv.command) {
                 case 'add':
                 case 'install':
                 case 'i':
                     plugin.add(op);
                     break;
+                case 'del':
                 case 'remove':
                 case 'uninstall':
                 case 'u':
@@ -436,6 +459,12 @@ let args = yargs
                 case 'repair':
                 case 'r':
                     plugin.repair(op);
+                    break;
+                case 'script':
+                    plugin.eeuiScript(argv.name, true);
+                    break;
+                case 'unscript':
+                    plugin.eeuiScript(argv.name, false);
                     break;
                 case 'create':
                 case 'c':
@@ -513,7 +542,9 @@ let args = yargs
         handler: () => {
             utils.verifyeeuiProject();
             utils.verifyeeuiTemplate();
-            builder.dev();
+            plugin.eeuiScript(null, true, () => {
+                builder.dev();
+            });
         }
     })
     .command({
@@ -522,7 +553,9 @@ let args = yargs
         handler: (argv) => {
             utils.verifyeeuiProject();
             utils.verifyeeuiTemplate();
-            builder.build(argv.s === true);
+            plugin.eeuiScript(null, true, () => {
+                builder.build(argv.s === true);
+            });
         }
     })
     .command({
@@ -550,9 +583,8 @@ let args = yargs
     })
     .version(() => {
         let text = "eeui-cli: " + chalk.underline(require('./package.json').version);
-        let file = path.resolve(process.cwd(), "eeui.config.js");
-        if (fse.existsSync(file)) {
-            text+= "\neeui-template: " + chalk.underline(require(path.resolve(process.cwd(), "package.json")).version);
+        if (utils.projectVersion()) {
+            text += "\neeui-template: " + chalk.underline(utils.projectVersion());
         }
         return text;
     })

@@ -6,9 +6,10 @@ import android.widget.Toast;
 
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
-import com.taobao.weex.common.WXModule;
 
-public class AppPluginDemoModule extends WXModule {
+import app.eeui.framework.extend.base.WXModuleBase;
+
+public class PluginDemoAppModule extends WXModuleBase {
 
     /**
      * 简单演示
@@ -16,7 +17,7 @@ public class AppPluginDemoModule extends WXModule {
      */
     @JSMethod
     public void simple(String msg) {
-        Toast.makeText(mWXSDKInstance.getContext(), msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -26,7 +27,7 @@ public class AppPluginDemoModule extends WXModule {
      */
     @JSMethod
     public void call(final String msg, final JSCallback callback) {
-        AlertDialog.Builder localBuilder = new AlertDialog.Builder(mWXSDKInstance.getContext());
+        AlertDialog.Builder localBuilder = new AlertDialog.Builder(getContext());
         localBuilder.setTitle("demo");
         localBuilder.setMessage(msg);
         localBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {

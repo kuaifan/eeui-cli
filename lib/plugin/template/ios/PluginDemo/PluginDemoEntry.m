@@ -4,7 +4,7 @@
 //
 
 #import "PluginDemoEntry.h"
-#import "WebPluginDemoModule.h"
+#import "PluginDemoWebModule.h"
 #import "WeexInitManager.h"
 #import <WebKit/WKWebView.h>
 
@@ -53,10 +53,16 @@ WEEX_PLUGIN_INIT(PluginDemoEntry)
     
 }
 
+//捕捉握手
+- (void) handleOpenURL:(NSURL *)url
+{
+
+}
+
 //webView初始化
 - (void) setJSCallModule:(JSCallCommon *)callCommon webView:(WKWebView*)webView
 {
-    [callCommon setJSCallAssign:webView name:@"PluginDemo" bridge:[[WebPluginDemoModule alloc] init]];
+    [callCommon setJSCallAssign:webView name:@"PluginDemo" bridge:[[PluginDemoWebModule alloc] init]];
 }
 
 @end

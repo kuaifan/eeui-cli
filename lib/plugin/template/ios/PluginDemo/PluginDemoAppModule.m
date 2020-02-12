@@ -1,18 +1,20 @@
 //
-//  AppPluginDemoModule.m
+//  PluginDemoAppModule.m
 //  Pods
 //
 
-#import "AppPluginDemoModule.h"
+#import "PluginDemoAppModule.h"
 #import <WeexPluginLoader/WeexPluginLoader.h>
 
-@interface AppPluginDemoModule ()
+@interface PluginDemoAppModule ()
 
 @end
 
-@implementation AppPluginDemoModule
+@implementation PluginDemoAppModule
 
-WX_PlUGIN_EXPORT_MODULE(PluginDemo, AppPluginDemoModule)
+@synthesize weexInstance;
+
+WX_PlUGIN_EXPORT_MODULE(PluginDemo, PluginDemoAppModule)
 WX_EXPORT_METHOD(@selector(simple:))
 WX_EXPORT_METHOD(@selector(call:callback:))
 WX_EXPORT_METHOD_SYNC(@selector(retMsg:))

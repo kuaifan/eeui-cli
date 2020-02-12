@@ -10,7 +10,7 @@ import app.eeui.framework.extend.view.webviewBridge.JsCallback;
 /**
  * web-view模块组件
  */
-public class WebPluginDemoModule {
+public class PluginDemoWebModule {
 
     /**
      * 简单演示

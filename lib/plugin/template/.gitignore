@@ -1,0 +1,4 @@
+./android/__MACOSX
+./android/build
+./android/*.iml
+./ios/__MACOSX

@@ -80,6 +80,10 @@
                     case "pause":
                         //页面失活(暂停)
                         break;
+
+                    case "destroy":
+                        //页面停止(销毁)
+                        break;
                 }
             },
 
