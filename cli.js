@@ -65,7 +65,7 @@ let questions = (inputName, releaseLists) => {
         },
         message: "请输入Android应用ID",
         validate: (value) => {
-            let pass = value.match(/^[a-zA-Z_][a-zA-Z0-9_]*[.][a-zA-Z_][a-zA-Z0-9_]*[.][a-zA-Z_][a-zA-Z0-9_]+$/);
+            let pass = value.match(/^[a-z][a-z0-9_]+([.][a-z][a-z0-9_]+){2,4}$/i);
             if (pass) {
                 applicationid = value;
                 return true;
@@ -80,7 +80,7 @@ let questions = (inputName, releaseLists) => {
         },
         message: "请输入iOS应用ID",
         validate: (value) => {
-            let pass = value.match(/^[a-zA-Z_][a-zA-Z0-9_]*[.][a-zA-Z_][a-zA-Z0-9_]*[.][a-zA-Z_][a-zA-Z0-9_]+$/);
+            let pass = value.match(/^[a-z][a-z0-9_]+([.][a-z][a-z0-9_]+){2,4}$/i);
             if (pass) {
                 return true;
             }
@@ -121,17 +121,16 @@ function initProject(createName) {
         }
         //
         let lists = [];
-        result.forEach(t => {
-            if (lists.length === 0) {
-                lists.push({
-                    name: t + " (Latest)",
-                    value: t
-                });
-            } else if (lists.length < 5) {
-                lists.push({
-                    name: t,
-                    value: t
-                });
+        result.some(t => {
+            if (!utils.leftExists(t, "2")) {
+                return false;
+            }
+            lists.push({
+                name: t,
+                value: t
+            });
+            if (lists.length > 5) {
+                return true;
             }
         });
         //
