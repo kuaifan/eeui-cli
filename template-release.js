@@ -54,9 +54,10 @@ class TemplateRelease {
     /**
      * 获取指定版本的 release，首先尝试缓存（CACHE_TEMPLATE_PATH），如果未缓存，再尝试下载并缓存
      * @param {string} release 指定版本，如果为空，表示最新版本
+     * @param {string} location 下载服务器
      * @param {Function} cb 通过该回调返回错误 error，以及无错时的 release 的路径，一般形如 ~/.eeui/template/0.1.0
      */
-    fetchRelease(release, cb) {
+    fetchRelease(release, location, cb) {
         let releasesInfo = this._readReleaseJSON();
         if (release) {
             let info = releasesInfo[release];
@@ -67,6 +68,9 @@ class TemplateRelease {
         }
 
         let url = this._getReleaseUrl(release);
+        if (location === 'eeui') {
+            url = url.replace('https://api.github.com/repos/', utils.apiUrl() + 'releases/')
+        }
         let spinText = `正在下载模板版本: ${release ? release : "latest"}...`;
         let spinDown = ora(spinText);
         spinDown.start();
@@ -87,7 +91,14 @@ class TemplateRelease {
                 cb(`未能获取版本 ${release ? release : "latest"}: ${errorInfo}`);
                 return;
             }
+            //
             let info = JSON.parse(body);
+            if (location === 'eeui') {
+                if (info.ret !== 1) {
+                    logger.error(info.msg || "未知错误，请选择其他下载服务器！");
+                }
+                info = info['data'];
+            }
             let newInfo = {};
             let tag = newInfo.tag = info["tag_name"];
             newInfo.time = info["published_at"];
@@ -162,10 +173,12 @@ class TemplateRelease {
         file.on("close", () => {
             decompress(TMP_DOWNLOAD_PATH, this.CACHE_TEMPLATE_PATH).then(() => {
                 let origPath = this._getLastReleasePath();
-                fs.moveSync(origPath, savePath); // 重命名为指定名
-                fs.unlinkSync(TMP_DOWNLOAD_PATH); // 删除下载的压缩包
+                fs.moveSync(origPath, savePath);    // 重命名为指定名
+                fs.unlinkSync(TMP_DOWNLOAD_PATH);   // 删除下载的压缩包
                 cb && cb();
-            })
+            }).catch((err) => {
+                cb && cb(`下载版本失败: ${err}`);
+            });
         }).on("error", (err) => {
             cb && cb(err)
         });

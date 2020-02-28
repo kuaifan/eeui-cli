@@ -14,7 +14,7 @@ const utils = require("./lib/utils");
 const project = require("./lib/utils/project");
 const backup = require("./lib/utils/backup");
 const runapp = require("./lib/run");
-const builder = require("./lib/builder");
+const buildApp = require("./lib/builder/buildApp");
 const plugin = require('./lib/plugin');
 const create = require('./lib/plugin/create');
 const publish = require('./lib/plugin/publish');
@@ -91,6 +91,17 @@ let questions = (inputName, releaseLists) => {
         name: 'release',
         message: "请选择框架版本",
         choices: releaseLists
+    }, {
+        type: 'list',
+        name: 'location',
+        message: "请选择下载服务器",
+        choices: [{
+            name: "Github服务器",
+            value: "github"
+        }, {
+            name: "EEUI官网服务器",
+            value: "eeui"
+        }]
     }];
 };
 
@@ -129,7 +140,7 @@ function initProject(createName) {
                 name: t,
                 value: t
             });
-            if (lists.length > 5) {
+            if (lists.length >= 10) {
                 return true;
             }
         });
@@ -149,7 +160,7 @@ function initProject(createName) {
             }
 
             let release = _answers.release === 'latest' ? '' : _answers.release;
-            templateRelease.fetchRelease(release, (error, releasePath) => {
+            templateRelease.fetchRelease(release, _answers.location, (error, releasePath) => {
                 if (error) {
                     logger.error(error);
                     return;
@@ -247,7 +258,7 @@ function initDemo(callback) {
  * 设置模板
  * @param rundir
  */
-function setDemo(rundir) {
+function setTemplate(rundir) {
     inquirer.prompt([{
         type: 'confirm',
         message: `此操作将重置src开发目录，是否继续操作？`,
@@ -293,10 +304,9 @@ function displayReleases() {
                 return false;
             }
             array.push(t);
-            if (i > 10) {
+            if (array.length >= 10) {
                 return true;
             }
-            i++;
         });
         if (array.length === 0) {
             logger.fatal("无可用版本！");
@@ -384,18 +394,18 @@ let args = yargs
         }
     })
     .command({
-        command: "setdemo",
+        command: "template",
         desc: "设置App模板（初始化演示模板）",
         handler: () => {
             utils.verifyeeuiProject();
-            setDemo(path.resolve(process.cwd()));
+            setTemplate(path.resolve(process.cwd()));
         }
     })
     .command({
         command: "update",
         desc: "项目主框架升级至最新版本",
         handler: () => {
-            if (utils.runNum(utils.getMiddle(utils.projectVersion(), null, ".")) < 2) {
+            if (utils.versionFunegt("2.0.0", utils.projectVersion())) {
                 logger.error(`当前主程序版本${utils.projectVersion()}仅支持手动升级，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
             }
             utils.verifyeeuiProject();
@@ -408,15 +418,16 @@ let args = yargs
         handler: (argv) => {
             utils.verifyeeuiProject();
             utils.verifyeeuiTemplate();
-            if (typeof argv.pageName === "string" && argv.pageName) {
+            let pageName = utils.rightDelete(argv.pageName, ".vue").trim();
+            if (pageName) {
                 let dir = path.resolve(process.cwd(), "src");
                 if (!fse.existsSync(dir)) {
                     logger.error(`目录“src”不存在，当前目录非eeui项目。`);
                     return;
                 }
-                let filePath = dir + "/pages/" + argv.pageName + ".vue";
+                let filePath = dir + "/pages/" + pageName + ".vue";
                 if (fse.existsSync(filePath)) {
-                    logger.error(`文件“${argv.pageName}.vue”已经存在。`);
+                    logger.error(`文件“${pageName}.vue”已经存在。`);
                     return;
                 }
                 let tmlPath = __dirname + "/lib/template/_template.vue";
@@ -425,7 +436,9 @@ let args = yargs
                     return;
                 }
                 fse.copySync(tmlPath, filePath);
-                logger.success(`模板文件“${argv.pageName}.vue”成功创建。`);
+                logger.success(`模板文件“${pageName}.vue”成功创建。`);
+            } else {
+                logger.fatal(`请输入要创建的文件名称。`);
             }
         }
     })
@@ -470,6 +483,7 @@ let args = yargs
                     create.create(op);
                     break;
                 case 'publish':
+                case 'upload':
                 case 'p':
                     publish.publish(op);
                     break;
@@ -537,23 +551,23 @@ let args = yargs
     })
     .command({
         command: "dev",
-        desc: "调试开发",
-        handler: () => {
-            utils.verifyeeuiProject();
-            utils.verifyeeuiTemplate();
-            plugin.eeuiScript(null, true, () => {
-                builder.dev();
-            });
-        }
-    })
-    .command({
-        command: "build",
         desc: "编译构造",
         handler: (argv) => {
             utils.verifyeeuiProject();
             utils.verifyeeuiTemplate();
             plugin.eeuiScript(null, true, () => {
-                builder.build(argv.s === true);
+                buildApp.dev(argv.s === true);
+            });
+        }
+    })
+    .command({
+        command: "build",
+        desc: "编译构造并最小化输出结果",
+        handler: (argv) => {
+            utils.verifyeeuiProject();
+            utils.verifyeeuiTemplate();
+            plugin.eeuiScript(null, true, () => {
+                buildApp.build(argv.s === true);
             });
         }
     })
@@ -594,7 +608,6 @@ let args = yargs
         "s": "simple"
     })
     .strict(true)
-    .demandCommand()
     .argv;
 
 //发布模块: npm publish

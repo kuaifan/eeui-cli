@@ -25,7 +25,7 @@
         width: 750px;
         height: 96px;
         display: flex;
-        background-color: #E31D1A;
+        background-color: #3EB4FF;
     }
     .nav-back {
         position: absolute;
@@ -89,15 +89,26 @@
 
             /**
              * 打开新页面
-             * @param jsPageName    (String)JS页面名称
+             * @param url           (String)页面地址
              * @param params        (Object)传递参数
+             * @param replace       (Boolean)打开新页面后关闭当前页面
              */
-            goForward(jsPageName, params) {
+            goForward(url, params, replace) {
+                let pageName = null;
+                if (replace === true) {
+                    let pageInfo = eeui.getPageInfo();
+                    pageName = pageInfo['pageName'];
+                }
+                //
                 eeui.openPage({
-                    url: str + ".js",
+                    url: url,
                     pageType: "app",
-                    statusBarColor: "#E31D1A",
+                    statusBarColor: "#3EB4FF",
                     params: params ? params : {}
+                }, (res) => {
+                    if (replace === true && res.status === 'create') {
+                        eeui.closePage(pageName);
+                    }
                 });
             },
 
