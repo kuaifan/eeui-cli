@@ -78,12 +78,12 @@ class TemplateRelease {
             spinDown.stop();
             if (err || res.statusCode !== 200) {
                 let errorInfo = err ? err : `${res.statusCode}: ${res.body}`;
-                logger.eeui(`未能下载 ${url} - ${errorInfo}`);
-                logger.eeui('正在清除缓存...');
+                logger.info(`未能下载 ${url} - ${errorInfo}`);
+                logger.info('正在清除缓存...');
                 if (!release) {
                     let latestRleaseInfo = this.getCachedReleaseInfo();
                     if (latestRleaseInfo) {
-                        logger.eeui(`在缓存中找到最新版本: ${latestRleaseInfo.tag}.`);
+                        logger.info(`在缓存中找到最新版本: ${latestRleaseInfo.tag}.`);
                         cb(null, path.join(this.CACHE_TEMPLATE_PATH, latestRleaseInfo.path));
                         return;
                     }
@@ -95,7 +95,7 @@ class TemplateRelease {
             let info = JSON.parse(body);
             if (location === 'eeui') {
                 if (info.ret !== 1) {
-                    logger.error(info.msg || "未知错误，请选择其他下载服务器！");
+                    logger.fatal(info.msg || "未知错误，请选择其他下载服务器！");
                 }
                 info = info['data'];
             }
@@ -105,7 +105,7 @@ class TemplateRelease {
             newInfo.path = newInfo.tag;
             let targetPath = path.join(this.CACHE_TEMPLATE_PATH, newInfo.path);
             if (fs.pathExistsSync(targetPath)) {
-                logger.eeui(`已经缓存的版本。`);
+                logger.info(`已经缓存的版本。`);
                 cb(null, targetPath);
                 return;
             }
