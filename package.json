@@ -70,9 +70,5 @@
         "weex-ui": "^0.8.4",
         "ws": "^7.2.1",
         "yargs": "^8.0.2"
-    },
-    "devDependencies": {
-        "less": "^3.11.1",
-        "less-loader": "^5.0.0"
     }
 }
