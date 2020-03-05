@@ -127,7 +127,7 @@ function initProject(createName) {
     templateRelease.fetchReleaseVersions((err, result) => {
         spinFetch.stop();
         if (err) {
-            logger.error(err);
+            logger.fatal(err);
             return;
         }
         //
@@ -146,7 +146,7 @@ function initProject(createName) {
         });
         //
         if (lists.length === 0) {
-            logger.error("没有找到可用的版本。");
+            logger.fatal("没有找到可用的版本。");
             return;
         }
         //
@@ -155,19 +155,19 @@ function initProject(createName) {
             let rundir = path.resolve(process.cwd(), _answers.name);
 
             if (fse.existsSync(_answers.name)) {
-                logger.error(`目录[${_answers.name}]已经存在。`);
+                logger.fatal(`目录[${_answers.name}]已经存在。`);
                 return;
             }
 
             let release = _answers.release === 'latest' ? '' : _answers.release;
             templateRelease.fetchRelease(release, _answers.location, (error, releasePath) => {
                 if (error) {
-                    logger.error(error);
+                    logger.fatal(error);
                     return;
                 }
 
                 let nextStep = (callback) => {
-                    logger.eeui("正在复制模板文件...");
+                    logger.info("正在复制模板文件...");
 
                     fse.copySync(releasePath, _answers.name);
                     project.initConfig(rundir, _answers);
@@ -195,12 +195,12 @@ function initProject(createName) {
                 };
 
                 let finalLog = () => {
-                    logger.eeuis("创建项目完成。");
+                    logger.success("创建项目完成。");
                     logger.sep();
-                    logger.eeui("您可以运行一下命令开始。");
-                    logger.eeui(chalk.white(`1. cd ${_answers.name}`));
-                    logger.eeui(chalk.white(`2. npm install`));
-                    logger.eeui(chalk.white(`3. npm run dev`));
+                    logger.info("您可以运行一下命令开始。");
+                    logger.info(chalk.white(`1. cd ${_answers.name}`));
+                    logger.info(chalk.white(`2. npm install`));
+                    logger.info(chalk.white(`3. npm run dev`));
                 };
 
                 initDemo((error, downFile, info) => {
@@ -277,7 +277,7 @@ function setTemplate(rundir) {
                             utils.editConfig(rundir, info.config);
                         });
                     }
-                    logger.eeuis("【" + info.desc + "】演示模板设置成功。");
+                    logger.success("【" + info.desc + "】演示模板设置成功。");
                 });
             });
         } else {
@@ -295,7 +295,7 @@ function displayReleases() {
     templateRelease.fetchReleaseVersions((err, result) => {
         spinPod.stop();
         if (err) {
-            logger.error(err);
+            logger.fatal(err);
             return;
         }
         let array = [];
@@ -346,7 +346,7 @@ function changeAppKey(path) {
         }
         return pwd;
     };
-    logger.eeui("正在创建appKey...");
+    logger.info("正在创建appKey...");
     config.appKey = createRand(32);
     content += "/**\n * 配置文件\n * 参数详细说明：https://eeui.app/guide/config.html\n */\n";
     content += "module.exports = ";
@@ -371,7 +371,7 @@ let args = yargs
         handler: (argv) => {
             if (typeof argv.name === "string") {
                 if (fse.existsSync(argv.name)) {
-                    logger.error(`目录“${argv.name}”已经存在。`);
+                    logger.fatal(`目录“${argv.name}”已经存在。`);
                     return;
                 }
             }
@@ -406,7 +406,7 @@ let args = yargs
         desc: "项目主框架升级至最新版本",
         handler: () => {
             if (utils.versionFunegt("2.0.0", utils.projectVersion())) {
-                logger.error(`当前主程序版本${utils.projectVersion()}仅支持手动升级，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
+                logger.fatal(`当前主程序版本${utils.projectVersion()}仅支持手动升级，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
             }
             utils.verifyeeuiProject();
             update.start();
@@ -422,17 +422,17 @@ let args = yargs
             if (pageName) {
                 let dir = path.resolve(process.cwd(), "src");
                 if (!fse.existsSync(dir)) {
-                    logger.error(`目录“src”不存在，当前目录非eeui项目。`);
+                    logger.fatal(`目录“src”不存在，当前目录非eeui项目。`);
                     return;
                 }
                 let filePath = dir + "/pages/" + pageName + ".vue";
                 if (fse.existsSync(filePath)) {
-                    logger.error(`文件“${pageName}.vue”已经存在。`);
+                    logger.fatal(`文件“${pageName}.vue”已经存在。`);
                     return;
                 }
                 let tmlPath = __dirname + "/lib/template/_template.vue";
                 if (!fse.existsSync(tmlPath)) {
-                    logger.error(`模板文件不存在。`);
+                    logger.fatal(`模板文件不存在。`);
                     return;
                 }
                 fse.copySync(tmlPath, filePath);
@@ -447,7 +447,7 @@ let args = yargs
         desc: "添加、删除、创建或发布插件",
         handler: (argv) => {
             if (utils.runNum(utils.getMiddle(utils.projectVersion(), null, ".")) < 2) {
-                logger.error(`当前主程序版本${utils.projectVersion()}过低无法使用此功能，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
+                logger.fatal(`当前主程序版本${utils.projectVersion()}过低无法使用此功能，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
             }
             utils.verifyeeuiProject();
             utils.verifyeeuiTemplate();
@@ -519,7 +519,7 @@ let args = yargs
         desc: "登录云中心",
         handler: () => {
             utils.login((data) => {
-                logger.eeuis(data.username + ' 登录成功！');
+                logger.success(data.username + ' 登录成功！');
             });
         }
     })
@@ -528,7 +528,7 @@ let args = yargs
         desc: "登出云中心",
         handler: () => {
             utils.logout(() => {
-                logger.eeuis('退出成功！');
+                logger.success('退出成功！');
             });
         }
     })
