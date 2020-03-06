@@ -405,10 +405,8 @@ let args = yargs
         command: "update",
         desc: "项目主框架升级至最新版本",
         handler: () => {
-            if (utils.versionFunegt("2.0.0", utils.projectVersion())) {
-                logger.fatal(`当前主程序版本${utils.projectVersion()}仅支持手动升级，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
-            }
             utils.verifyeeuiProject();
+            utils.verifyeeuiTemplate();
             update.start();
         }
     })
@@ -446,9 +444,6 @@ let args = yargs
         command: "plugin [command] [name]",
         desc: "添加、删除、创建或发布插件",
         handler: (argv) => {
-            if (utils.runNum(utils.getMiddle(utils.projectVersion(), null, ".")) < 2) {
-                logger.fatal(`当前主程序版本${utils.projectVersion()}过低无法使用此功能，升级方法详见：${chalk.underline(`https://eeui.app/guide/update.html`)}`);
-            }
             utils.verifyeeuiProject();
             utils.verifyeeuiTemplate();
             let op = {};
