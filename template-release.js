@@ -6,7 +6,7 @@ const decompress = require('decompress');
 const tmp = require('tmp');
 const request = require('request').defaults({
     headers: {
-        'User-Agent': 'node request'
+        'User-Agent': 'request'
     }
 });
 
