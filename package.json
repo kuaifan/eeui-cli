@@ -1,5 +1,5 @@
 {
-    "name": "eeui",
+    "name": "eeui-cli",
     "version": "2.3.0",
     "description": "A simple CLI for scaffolding eeui projects, we provide eeui-template to quickly build small and medium sized app.",
     "bin": {
