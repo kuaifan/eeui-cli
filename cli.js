@@ -271,9 +271,14 @@ function setTemplate(rundir) {
                     return;
                 }
                 let srcDir = rundir + "/src";
+                let entryFile = path.resolve(srcDir, "entry.js");
+                let entryContext = fse.existsSync(entryFile) ? fse.readFileSync(entryFile, 'utf8') : "";
                 fse.remove(path.resolve(srcDir), (err) => {
                     if (!err) {
                         decompress(downFile, path.resolve(srcDir)).then(() => {
+                            if (!fse.existsSync(entryFile) && entryContext) {
+                                fse.writeFileSync(entryFile, entryContext, 'utf8');
+                            }
                             utils.editConfig(rundir, info.config);
                         });
                     }
