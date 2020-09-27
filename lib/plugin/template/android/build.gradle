@@ -27,8 +27,12 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //
+    if (project.implementFromWeex) {
+        compileOnly project(':weex_sdk')
+    } else {
+        compileOnly "org.apache.weex:sdk_legacy:${project.weex_sdkLibVersion}"
+    }
     compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
-    compileOnly "org.apache.weex:sdk_legacy:${project.weex_sdkLibVersion}"
     //
     compileOnly project(":eeui")
 }
