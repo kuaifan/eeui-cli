@@ -42,6 +42,9 @@ let questions = (inputName, releaseLists) => {
             if (!pass) {
                 return '输入格式错误，请重新输入。';
             }
+            if (value.indexOf('PluginDemo') > -1) {
+                return '名称不可包含：PluginDemo。';
+            }
             if (fse.existsSync(value)) {
                 return '目录[' + value + ']已经存在，请重新输入。';
             }
