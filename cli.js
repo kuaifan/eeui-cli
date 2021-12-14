@@ -206,14 +206,6 @@ function initProject(createName) {
                     logger.info(chalk.white(`3. npm run dev`));
                 };
                 
-                // 用户选择GitHub服务器下载，直接拷贝GitHub默认模板(ps: 不再往下执行选示例模板,防止EEUI服务器挂掉)
-                if (_answers.location === 'github') {
-                    nextStep(() => {
-                        finalLog();
-                    });
-                    return
-                }
-
                 initDemo((error, downFile, info) => {
                     if (error) {
                         logger.warn(error);
