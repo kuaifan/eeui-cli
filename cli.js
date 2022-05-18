@@ -567,11 +567,15 @@ let args = yargs
         command: "build",
         desc: "编译构造并最小化输出结果",
         handler: (argv) => {
-            utils.verifyeeuiProject();
-            utils.verifyeeuiTemplate();
-            plugin.eeuiScript(null, true, () => {
-                buildApp.build(argv.s === true);
-            });
+            if (argv.sf === true) {
+                buildApp.syncFolderAndWebSocket(null, null, null, true);
+            } else {
+                utils.verifyeeuiProject();
+                utils.verifyeeuiTemplate();
+                plugin.eeuiScript(null, true, () => {
+                    buildApp.build(argv.s === true);
+                });
+            }
         }
     })
     .command({
@@ -608,7 +612,8 @@ let args = yargs
     .alias({
         "h": "help",
         "v": "version",
-        "s": "simple"
+        "s": "simple",
+        "sf": "syncFolder",
     })
     .strict(true)
     .argv;
