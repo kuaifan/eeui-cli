@@ -205,7 +205,7 @@ function initProject(createName) {
                     logger.info(chalk.white(`2. npm install`));
                     logger.info(chalk.white(`3. npm run dev`));
                 };
-
+                
                 initDemo((error, downFile, info) => {
                     if (error) {
                         logger.warn(error);
